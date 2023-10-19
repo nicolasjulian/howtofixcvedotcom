@@ -75,7 +75,13 @@ jobs:
         git add .
         git commit -m "Bump docker tag"
 
-    - name: Push changes
-      run: |
-        git remote set-url origin https://x-access-token:${{ secrets.REPO_ARGO_TOKEN }}@github.com/nicolasjulian/argocd-howtofixcvedotcom.git
-        git push origin main
+    - name: Pushes to another repository
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.REPO_ARGO_TOKEN }}
+      with:
+        source-directory: '.'
+        destination-github-username: 'nicolasjulian'
+        destination-repository-name: 'argocd-howtofixcvedotcom'
+        user-email: action@github.com
+        target-branch: main
