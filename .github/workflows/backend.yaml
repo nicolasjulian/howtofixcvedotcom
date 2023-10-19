@@ -50,7 +50,10 @@ jobs:
         path: git_commit_short.txt
 
     - name: Set GIT_COMMIT_SHORT env from artifact
-      run: echo "GIT_COMMIT_SHORT=$(cat git_commit_short.txt)" >> $GITHUB_ENV
+      run: |
+        ls git_commit_short.txt
+        echo "GIT_COMMIT_SHORT=$(cat git_commit_short.txt)" >> $GITHUB_ENV
+
 
     - name: Checkout ArgoCD repository
       uses: actions/checkout@v2
