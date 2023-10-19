@@ -3,3 +3,4 @@ build:
 push:
 	docker push -t backend_howtofixcvedotcom:${GIT_COMMIT_SHORT} .
 test:
+	echo test
