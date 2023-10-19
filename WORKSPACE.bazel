@@ -38,13 +38,3 @@ go_rules_dependencies()
 go_register_toolchains(version = "1.20.5")
 
 gazelle_dependencies(go_repository_default_config = "//:WORKSPACE.bazel")
-
-### Nodejs
-load("@io_bazel_rules_docker//docker:docker.bzl", "docker_build")
-
-docker_build(
-    name = "frontend_image",
-    base = "@alpine_linux_amd64//image", # This can be changed according to your Dockerfile base image
-    dockerfile = "Dockerfile",
-    files = glob(["**"]),
-)

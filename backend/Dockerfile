@@ -1,9 +1,8 @@
 FROM golang:1.21-alpine AS build
 
 WORKDIR /src
-ENV CGO_ENABLED=0
 COPY . .
-RUN GOOS=linux GOARCH=amd64 go build -o /out/backend_howtofixcvedotcom .
+RUN GOARCH=amd64 go build -o /out/backend_howtofixcvedotcom .
 
 FROM alpine:3
 RUN apk update \
