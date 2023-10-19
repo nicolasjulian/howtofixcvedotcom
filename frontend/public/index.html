@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .page-link {
+            padding: 10px;
+            margin: 0 5px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .page-link:hover {
+            background-color: #0056b3;
+        }
+        #details {
+            font-size: 16px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .latest-cve-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CVE Search</h1>
+        <p>Enter a CVE ID to search:</p>
+        <input type="text" id="cveId" placeholder="CVE ID">
+        <button id="searchBtn">Search</button>
+        <div id="latestCve">
+            <h2>Latest CVE:</h2>
+            <div id="latestCveItems"></div>
+        </div>
+        <div id="cveList">
+            <h2>Search Results:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody id="cveTableBody"></tbody>
+            </table>
+            <div class="pagination" id="pagination"></div>
+            <div id="details"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const searchBtn = document.getElementById('searchBtn');
+        const cveIdInput = document.getElementById('cveId');
+        const cveTableBody = document.getElementById('cveTableBody');
+        const pagination = document.getElementById('pagination');
+        const details = document.getElementById('details');
+        const latestCveItems = document.getElementById('latestCveItems');
+
+        let currentPage = 1;
+        const pageSize = 10;
+
+        searchBtn.addEventListener('click', () => {
+            currentPage = 1;
+            searchCVEs();
+        });
+
+        async function searchCVEs() {
+            const cveId = cveIdInput.value;
+            try {
+                const response = await axios.get(`/search/${cveId}`);
+                const data = response.data;
+                displaySearchResults(data);
+            } catch (error) {
+                console.error(error);
+                cveTableBody.innerHTML = '';
+                pagination.innerHTML = '';
+                details.textContent = '';
+            }
+        }
+
+        async function displaySearchResults(data) {
+            const totalPages = Math.ceil(data.length / pageSize);
+            const startIdx = (currentPage - 1) * pageSize;
+            const endIdx = startIdx + pageSize;
+            const paginatedData = data.slice(startIdx, endIdx);
+
+            cveTableBody.innerHTML = '';
+            paginatedData.forEach((cve) => {
+                const row = document.createElement('tr');
+                const idCell = document.createElement('td');
+                const summaryCell = document.createElement('td');
+
+                idCell.textContent = cve.id;
+                summaryCell.textContent = cve.summary;
+
+                row.appendChild(idCell);
+                row.appendChild(summaryCell);
+                row.addEventListener('click', () => displayCVEDetails(cve));
+
+                cveTableBody.appendChild(row);
+            });
+
+            generatePagination(totalPages);
+        }
+
+        function generatePagination(totalPages) {
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('button');
+                pageLink.classList.add('page-link');
+                pageLink.textContent = i;
+                pageLink.addEventListener('click', () => {
+                    currentPage = i;
+                    searchCVEs();
+                });
+                pagination.appendChild(pageLink);
+            }
+        }
+
+        async function displayCVEDetails(cve) {
+            try {
+                const response = await axios.get(`/details/${cve.id}`);
+                const detailsData = response.data;
+                details.textContent = JSON.stringify(detailsData, null, 2);
+            } catch (error) {
+                console.error(error);
+                details.textContent = '';
+            }
+        }
+
+        async function getLatestCve() {
+            try {
+                const response = await axios.get('/latest');
+                if (response.status === 200) {
+                    const data = response.data;
+                    displayLatestCve(data);
+                } else {
+                    throw new Error(`HTTP request failed with status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error fetching latest CVEs:', error);
+                latestCveItems.innerHTML = 'Error fetching latest CVEs.';
+            }
+        }
+
+        function displayLatestCve(cves) {
+            if (Array.isArray(cves) && cves.length > 0) {
+                latestCveItems.innerHTML = ''; // Clear previous items
+                cves.forEach(cve => {
+                    const cveItem = document.createElement('div');
+                    cveItem.classList.add('latest-cve-item');
+                    cveItem.textContent = `ID: ${cve.id}\nSummary: ${cve.summary}`;
+                    cveItem.addEventListener('click', () => displayCVEDetails(cve));
+                    latestCveItems.appendChild(cveItem);
+                });
+            } else {
+                latestCveItems.innerHTML = 'No latest CVEs found.';
+            }
+        }
+
+        getLatestCve();
+    </script>
+</body>
+</html>

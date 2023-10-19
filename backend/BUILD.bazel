@@ -1,0 +1,6 @@
+genrule(
+    name = "backend",
+    srcs = [],
+    outs = ["backend.txt"],
+    cmd = "sleep 5 && echo 'This is your Backend' > $@",
+)
