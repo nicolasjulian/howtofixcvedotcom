@@ -1,6 +1,0 @@
-genrule(
-    name = "frontend",
-    srcs = [],
-    outs = ["frontend.txt"],
-    cmd = "sleep 5 && echo 'This is your Frontend' > $@",
-)
