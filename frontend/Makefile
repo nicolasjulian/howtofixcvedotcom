@@ -1,4 +1,4 @@
 build:
-	docker build -t frontend_image:${GIT_COMMIT_SHORT} .
+	docker build -t frontend:${GIT_COMMIT_SHORT} .
 test:
-	echo test
+	echo testing
