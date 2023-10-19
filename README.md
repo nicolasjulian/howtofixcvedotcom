@@ -1,5 +1,8 @@
 # HowToFixCVE.com Monorepo
 
+API : https://howtofixcve.com
+Frontned : https://howtofixcve.com
+
 This monorepo contains the source code for HowToFixCVE.com, a project for searching and fixing Common Vulnerabilities and Exposures (CVEs). It is organized into two main components: `backend` and `frontend`, managed using Bazel build system.
 
 **Notes : The Front end is very very terrible**
