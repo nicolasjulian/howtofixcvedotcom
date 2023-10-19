@@ -29,11 +29,31 @@ jobs:
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }} backend/
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
 
+    - name: Save GIT_COMMIT_SHORT to a file
+      run: echo "${{ env.GIT_COMMIT_SHORT }}" > git_commit_short.txt
+
+    - name: Upload GIT_COMMIT_SHORT as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: git_commit_short
+        path: git_commit_short.txt
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download GIT_COMMIT_SHORT artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: git_commit_short
+
+    - name: Set GIT_COMMIT_SHORT env from artifact
+      run: echo "GIT_COMMIT_SHORT=$(cat git_commit_short.txt)" >> $GITHUB_ENV
+
     - name: Checkout ArgoCD repository
       uses: actions/checkout@v2
       with:
         repository: "nicolasjulian/argocd-howtofixcvedotcom"
-        path: "argocd-repo"
 
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v2.0.0
@@ -42,7 +62,7 @@ jobs:
 
     - name: Update Kubernetes resources
       run: |
-       cd argocd-repo/Application/production
+       cd Application/production
        kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
        cat kustomization.yaml
 
@@ -57,3 +77,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.REPO_ARGO_TOKEN }}
+        branch: main
