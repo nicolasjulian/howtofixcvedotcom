@@ -14,8 +14,8 @@ jobs:
 
     - name: Extract Git Commit ID
       run: |
-        echo "GIT_COMMIT=$(git rev-parse HEAD)"
-        echo "GIT_COMMIT_SHORT=$(echo $GIT_COMMIT | cut -c 1-7)"
+        GIT_COMMIT=$(git rev-parse HEAD)
+        GIT_COMMIT_SHORT=$(echo $GIT_COMMIT | awk '{print substr($0,1,7)}')
         echo "GIT_COMMIT_SHORT=$GIT_COMMIT_SHORT" >> $GITHUB_ENV
 
     - name: Login to Docker Hub
