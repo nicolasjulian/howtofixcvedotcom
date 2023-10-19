@@ -1,6 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
 genrule(
     name = "backend",
     srcs = [],
     outs = ["backend.txt"],
     cmd = "sleep 5 && echo 'This is your Backend' > $@",
+)
+
+go_library(
+    name = "backend_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/example/project/backend",
+    visibility = ["//visibility:private"],
+    deps = ["@com_github_labstack_echo_v4//:go_default_library"],
 )

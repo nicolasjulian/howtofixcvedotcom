@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    "backend/controllers"
+    "github.com/nicolasjulian/howtofixcvedotcom/backend/controllers"
 
     "github.com/labstack/echo/v4"
 )

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-    "backend/utils"
-    "backend/configs"
+    "github.com/nicolasjulian/howtofixcvedotcom/backend/backend/utils"
+    "github.com/nicolasjulian/howtofixcvedotcom/backend/configs"
 
     "encoding/json"
     "log"
