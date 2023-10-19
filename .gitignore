@@ -134,3 +134,24 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Bazel 
+# Bazel output directories
+bazel-*
+
+# Bazel build artifacts
+*.bazel
+
+# Bazel cache
+bazel-bin/
+bazel-out/
+bazel-testlogs/
+
+# Bazel lock files
+BUILD.bazel.lock
+
+# Bazel workspace status file
+WORKSPACE.bazel.bazelversion
+
+# Bazel external dependencies
+external/
