@@ -68,6 +68,13 @@ jobs:
        kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
        cat kustomization.yaml
 
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
@@ -75,13 +82,6 @@ jobs:
         git add .
         git commit -m "Bump docker tag"
 
-    - name: Pushes to another repository
-      uses: cpina/github-action-push-to-another-repository@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.REPO_ARGO_TOKEN }}
-      with:
-        source-directory: '.'
-        destination-github-username: 'nicolasjulian'
-        destination-repository-name: 'argocd-howtofixcvedotcom'
-        user-email: action@github.com
-        target-branch: main
+    - name: Push to Repos
+      run: |
+        GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=~/.ssh/known_hosts" git push origin main
