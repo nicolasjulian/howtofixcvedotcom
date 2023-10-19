@@ -84,4 +84,5 @@ jobs:
 
     - name: Push to Repos
       run: |
+        git remote set-url origin git@github.com:nicolasjulian/argocd-howtofixcvedotcom.git
         GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=~/.ssh/known_hosts" git push origin main
