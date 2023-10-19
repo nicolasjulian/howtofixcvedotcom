@@ -81,6 +81,9 @@
             cursor: pointer;
             background-color: #f9f9f9;
         }
+        .search-results {
+            display: none; /* Hide the search results by default */
+        }
     </style>
 </head>
 <body>
@@ -101,7 +104,7 @@
                 <tbody id="latestCveTableBody"></tbody>
             </table>
         </div>
-        <div id="cveList">
+        <div id="cveList" class="search-results"> <!-- Added class "search-results" -->
             <h2>Search Results:</h2>
             <table>
                 <thead>
@@ -125,7 +128,9 @@
         const pagination = document.getElementById('pagination');
         const details = document.getElementById('details');
         const latestCveTableBody = document.getElementById('latestCveTableBody');
-        
+        const searchResults = document.querySelector('.search-results');
+        const latestCve = document.getElementById('latestCve');
+
         let currentPage = 1;
         const pageSize = 10;
 
@@ -145,7 +150,7 @@
                 cveTableBody.innerHTML = '';
                 pagination.innerHTML = '';
                 details.textContent = '';
-                cveList.style.display = 'none';
+                searchResults.style.display = 'none'; // Hide the search results
             }
         }
 
@@ -172,7 +177,8 @@
             });
 
             generatePagination(totalPages);
-            cveList.style.display = 'block'; // Show the search results
+            searchResults.style.display = 'block'; // Show the search results
+            latestCve.style.display = 'none'; // Hide the latest CVEs
         }
 
         function generatePagination(totalPages) {
