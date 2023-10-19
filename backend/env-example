@@ -1,0 +1,3 @@
+export AUTH_USER=manyol
+export AUTH_PASSWORD=xxxxxxxxxxxxxxxx
+export CVE_API="https://www.opencve.io"
