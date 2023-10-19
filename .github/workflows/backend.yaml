@@ -76,7 +76,6 @@ jobs:
         git commit -m "Bump docker tag"
 
     - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.REPO_ARGO_TOKEN }}
-        branch: main
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.REPO_ARGO_TOKEN }}@github.com/nicolasjulian/argocd-howtofixcvedotcom.git
+        git push origin main
