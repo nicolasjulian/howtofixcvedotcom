@@ -18,12 +18,12 @@ jobs:
         echo "GIT_COMMIT_SHORT=$(echo $GIT_COMMIT | cut -c 1-7)" >> $GITHUB_ENV
 
     - name: Login to Docker Hub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     - name: Docker Build and Push for Frontend
       run: |
-        docker build -t your_dockerhub_username/frontend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }} frontend/
-        docker push your_dockerhub_username/frontend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }} frontend/
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
