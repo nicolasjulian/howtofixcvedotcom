@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 
 // Define the API URL
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://api.howtofixcve.com/';
 
 // Set up routes
 app.get('/', (req, res) => {
