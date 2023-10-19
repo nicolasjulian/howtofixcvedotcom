@@ -42,7 +42,7 @@ jobs:
 
     - name: Update Kubernetes resources
       run: |
-       cd argocd-repo/application/production
+       cd argocd-repo/Application/Production
        kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.run_number }}-${{ env.GIT_COMMIT_SHORT }}
        cat kustomization.yaml
 
