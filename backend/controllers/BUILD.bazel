@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "controllers",
+    srcs = ["controller.go"],
+    importpath = "github.com/nicolasjulian/howtofixcvedotcom/backend/controllers",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//backend/configs",
+        "//backend/utils",
+        "@com_github_labstack_echo_v4//:echo",
+    ],
+)

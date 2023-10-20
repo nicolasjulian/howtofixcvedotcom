@@ -1,16 +1,36 @@
 # HowToFixCVE.com Monorepo
 
-API : https://howtofixcve.com
-Frontned : https://howtofixcve.com
+Welcome to the monorepo for HowToFixCVE.com, a platform designed for searching and addressing Common Vulnerabilities and Exposures (CVEs).
 
-This monorepo contains the source code for HowToFixCVE.com, a project for searching and fixing Common Vulnerabilities and Exposures (CVEs). It is organized into two main components: `backend` and `frontend`, managed using Bazel build system.
+## Quick Links
 
-**Notes : The Front end is very very terrible**
-## Project Structure
+- **Public API:** [https://api.howtofixcve.com](https://api.howtofixcve.com)
+- **Frontend:** [https://howtofixcve.com](https://howtofixcve.com)
+- **ArgoCD Manifests:** [https://github.com/nicolasjulian/argo-howtofixcvedotcom](https://github.com/nicolasjulian/argo-howtofixcvedotcom)
 
-The repository is structured as follows:
+## Tech Stack
 
-```
+- **Kubernetes:** For container orchestration.
+- **ArgoCD:** Deployments are managed through ArgoCD, with manifests housed in a [separate repository](https://github.com/nicolasjulian/argo-howtofixcvedotcom).
+- **Bazel:** Used to manage Golang dependencies in this monorepo.
+- **Cloudflare:** Provides DNS, SSL, and Tunnels.
+
+## Deployment
+
+Whenever changes are made to the backend or frontend:
+
+1. The corresponding workflow is triggered.
+2. The new version is built and the image pushed to DockerHub.
+3. The deploy stage updates image tags in the ArgoCD repository.
+4. Finally, ArgoCD applies a blue-green deployment to roll out the changes.
+
+## About the Project
+
+> **Disclaimer:** The frontend design is terrible – this project is mostly for fun!
+
+### Structure
+
+```plaintext
 .
 ├── backend/
 │   ├── configs/
@@ -30,59 +50,53 @@ The repository is structured as follows:
 ├── WORKSPACE.bazel
 ```
 
-- `backend`: Contains the backend code for HowToFixCVE.com.
-  - `configs`: Configuration files for the backend.
-  - `controllers`: Controllers for handling API requests.
-  - `utils`: Utility functions and libraries.
-  - `main.go`: The entry point for the backend application.
-- `frontend`: Contains the frontend code for HowToFixCVE.com.
-  - `app.js`: The main JavaScript file for the frontend.
-  - `public`: Static assets and HTML templates.
-- `BUILD.bazel`: Bazel build configuration file.
-- `WORKSPACE.bazel`: Bazel workspace configuration file.
+- **backend**: Houses backend code, configs, controllers, utilities, and the main entry point.
+- **frontend**: Contains the frontend's main JavaScript file and static assets.
+- **Bazel Configuration**: `BUILD.bazel` and `WORKSPACE.bazel` contain Bazel-specific configurations.
 
 ## Getting Started
 
-Follow these steps to set up and run the project locally:
-
 ### Prerequisites
 
-- [Bazel](https://bazel.build/): You need to have Bazel installed on your system.
+- **Bazel:** Ensure [Bazel](https://bazel.build/) is installed on your machine.
 
-### Building and Running
+### Setup & Execution
 
-1. Clone this repository:
-
+1. Clone the repo:
    ```bash
    git clone https://github.com/yourusername/howtofixcvedotcom.git
    cd howtofixcvedotcom
    ```
 
-2. Build the backend and frontend:
-
+2. Build both backend and frontend:
    ```bash
-   bazel build //backend:main
-   bazel build //frontend:app
+   bazel build backend/...
    ```
 
-3. Run the backend:
-
+3. Execute the backend:
    ```bash
-   bazel-bin/backend/main
+   export AUTH_USER=<your_auth_user>
+   export AUTH_PASSWORD=<your_auth_password>
+   export CVE_API="https://www.opencve.io"
+
+   bazel run backend:backend_howtofixcvedotcom
    ```
 
-4. Run the frontend:
-
+4. Bazel & Gazelle Commands:
    ```bash
-   bazel-bin/frontend/app
+   bazel run //:gazelle
+   bazel query "//backend:*"
+   bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=deps.bzl%go_dependencies
    ```
 
-Now, you should be able to access the HowToFixCVE.com web application locally.
+### Access
+
+Once executed, the HowToFixCVE.com web application should be accessible locally.
 
 ## Contributing
 
-We welcome contributions! If you'd like to contribute to this project, please follow our [contribution guidelines](CONTRIBUTING.md).
+Interested in making a contribution? Please consult our [contribution guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. Refer to the [LICENSE](LICENSE) file for details.

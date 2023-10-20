@@ -139,9 +139,6 @@ dist
 # Bazel output directories
 bazel-*
 
-# Bazel build artifacts
-*.bazel
-
 # Bazel cache
 bazel-bin/
 bazel-out/
