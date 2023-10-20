@@ -8,6 +8,13 @@ Welcome to the monorepo for HowToFixCVE.com, a platform designed for searching a
 - **Frontend:** [https://howtofixcve.com](https://howtofixcve.com)
 - **ArgoCD Manifests:** [https://github.com/nicolasjulian/argo-howtofixcvedotcom](https://github.com/nicolasjulian/argo-howtofixcvedotcom)
 
+## API Endpoints
+
+- **Latest CVEs:** `/latest`
+- **Specific CVE Details:** `/info/{CVE-ID}`
+
+Both endpoints return responses in JSON format.
+
 ## Tech Stack
 
 - **Kubernetes:** For container orchestration.
